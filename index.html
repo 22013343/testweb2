@@ -168,6 +168,15 @@
   document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
     checkbox.addEventListener('change', function () {
       const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
+      
+      // Track each click as an event
+      const dishId = this.value;
+      const categoryName = this.getAttribute('data-category');
+      const price = parseFloat(this.getAttribute('data-price'));
+      const action = this.checked ? 'Selected' : 'Deselected';
+      _paq.push(['trackEvent', 'Dish Interaction', action, dishId, price]);
+      console.log(`Event tracked: ${action} ${dishId}, Category: ${categoryName}, Price: $${price}`);
+
       if (selectedItems.length > 2) {
         alert('You can only select up to 2 dishes.');
         this.checked = false; // Uncheck the last selected checkbox
@@ -183,6 +192,14 @@
 
   document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
     radio.addEventListener('change', function () {
+      // Track each click as an event
+      const vegId = this.value;
+      const categoryName = this.getAttribute('data-category');
+      const price = parseFloat(this.getAttribute('data-price'));
+      const action = 'Selected'; // Radio buttons only have a "Selected" action
+      _paq.push(['trackEvent', 'Vegetable Interaction', action, vegId, price]);
+      console.log(`Event tracked: ${action} ${vegId}, Category: ${categoryName}, Price: $${price}`);
+
       if (validVegSelection) {
         // Remove the previously selected vegetable from the cart
         updateCart(validVegSelection, 'deselected', 'vegetable');
