@@ -194,29 +194,44 @@
     console.log(`Event tracked: ${eventLabel} - ${dishId}, Category: ${categoryName}, Price: $${price}`);
   }
 
-  // Maintain a valid vegetable selection (radio buttons)
-  let validVegSelection = null;
+// Maintain a valid vegetable selection (radio buttons)
+let validVegSelection = null;
 
-  // Add event listeners for radio buttons
-  document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
-    radio.addEventListener('change', function () {
-      if (validVegSelection) {
-        // Remove previously selected vegetable from the cart
-        updateCart(validVegSelection, 'deselected', 'vegetable');
-      }
+// Add event listeners for radio buttons
+document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
+  radio.addEventListener('change', function () {
+    // Log the deselection of the previously selected vegetable, if applicable
+    if (validVegSelection && validVegSelection !== this) {
+      const previousVegId = validVegSelection.value;
+      const previousCategoryName = validVegSelection.getAttribute('data-category');
+      const previousPrice = parseFloat(validVegSelection.getAttribute('data-price'));
 
-      // Update valid vegetable selection
-      validVegSelection = this;
-      updateCart(this, 'selected', 'vegetable');
+      // Log deselection event
+      _paq.push(['trackEvent', 'Vegetable Selection', 'Deselected', previousVegId, previousPrice]);
+      console.log(`Event tracked: Deselected - ${previousVegId}, Category: ${previousCategoryName}, Price: $${previousPrice}`);
 
-      // Log radio selection
-      const vegId = this.value;
-      const categoryName = this.getAttribute('data-category');
-      const price = parseFloat(this.getAttribute('data-price'));
-      _paq.push(['trackEvent', 'Vegetable Selection', 'Selected', vegId, price]);
-      console.log(`Event tracked: Selected - ${vegId}, Category: ${categoryName}, Price: $${price}`);
-    });
+      // Remove the previously selected vegetable from the eCommerce cart
+      _paq.push(['removeEcommerceItem', previousVegId]);
+      console.log(`Vegetable removed from cart: ${previousVegId}`);
+    }
+
+    // Update the valid vegetable selection
+    validVegSelection = this;
+
+    // Log the selection of the new vegetable
+    const newVegId = this.value;
+    const newCategoryName = this.getAttribute('data-category');
+    const newPrice = parseFloat(this.getAttribute('data-price'));
+
+    // Log selection event
+    _paq.push(['trackEvent', 'Vegetable Selection', 'Selected', newVegId, newPrice]);
+    console.log(`Event tracked: Selected - ${newVegId}, Category: ${newCategoryName}, Price: $${newPrice}`);
+
+    // Add the newly selected vegetable to the eCommerce cart
+    _paq.push(['addEcommerceItem', newVegId, newVegId, newCategoryName, newPrice, 1]);
+    console.log(`Vegetable added to cart: ${newVegId}, Price: ${newPrice}`);
   });
+});
 
   // Function to handle cart updates dynamically
   function updateCart(item, action, type) {
