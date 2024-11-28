@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dish Selection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background-color: #f8f8f8;
+      padding: 10px 20px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    nav {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .grid-wrapper ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      list-style: none;
+      padding: 0;
+      max-width: 400px;
+      margin: auto;
+    }
+    .grid-wrapper li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .grid-wrapper {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>Neo Garden Catering</h1>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <a href="#rice-noodles">Rice/Noodles</a>
+    <a href="#vegetables-beancurd">Vegetables/Beancurd</a>
+    <a href="#submit">Submit</a>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Rice/Noodles Section -->
+    <section id="rice-noodles">
+      <h1>RICE/NOODLES</h1>
+      <form id="dishForm">
+        <div class="grid-wrapper">
+          <ul>
+            <li>
+              <input type="checkbox" name="dishes" value="Yang Chow Fried Rice" data-category="Rice" data-price="8.50">
+              Yang Chow Fried Rice
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Yam Rice W Mushroom" data-category="Rice" data-price="7.50">
+              Yam Rice W Mushroom
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Thai Pineapple Fried Rice" data-category="Rice" data-price="9.00">
+              Thai Pineapple Fried Rice
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Sin Chow Mee Hoon" data-category="Noodles" data-price="7.80">
+              Sin Chow Mee Hoon
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Spaghetti Aglio Olio" data-category="Pasta" data-price="10.80">
+              Spaghetti Aglio Olio (+0.80)
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Fried Hong Kong Mee" data-category="Noodles" data-price="8.00">
+              Fried Hong Kong Mee
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Sambal Fried Rice" data-category="Rice" data-price="9.50">
+              Sambal Fried Rice
+            </li>
+          </ul>
+        </div>
+      </form>
+    </section>
+
+    <!-- Vegetables/Beancurd Section -->
+    <section id="vegetables-beancurd">
+      <h1>VEGETABLES/BEANCURD</h1>
+      <form>
+        <div class="grid-wrapper">
+          <ul>
+            <li>
+              <input type="radio" name="vegetables" value="Chap Chye w Black Fungus" data-category="Vegetables" data-price="5.00">
+              Chap Chye w Black Fungus
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Loh Han Vegetable" data-category="Vegetables" data-price="5.50">
+              Loh Han Vegetable
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Oyster Kai Lan w Mushroom" data-category="Vegetables" data-price="6.00">
+              Oyster Kai Lan w Mushroom
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Mushroom Broccoli" data-category="Vegetables" data-price="5.80">
+              Mushroom Broccoli
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Neo's Tofu w Broccoli" data-category="Vegetables" data-price="6.80">
+              Neo's Tofu w Broccoli (+0.80)
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Braised Beancurd" data-category="Beancurd" data-price="5.20">
+              Braised Beancurd
+            </li>
+          </ul>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- Submit Button -->
+  <div id="submit" style="text-align: center; margin: 20px;">
+    <button id="submitButton" style="padding: 10px 20px;">Submit Selection</button>
+  </div>
+
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://tracker.neogroup.com.sg/";
+      _paq.push(['setTrackerUrl', u+'matomo.php']);
+      _paq.push(['setSiteId', '11']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+
+    // Track Checkbox Selections
+    document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const dishId = this.value;
+        const categoryName = this.getAttribute('data-category');
+        const price = parseFloat(this.getAttribute('data-price'));
+        const action = this.checked ? 'Selected' : 'Deselected';
+
+        // Push selection to Matomo
+        _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
+        if (this.checked) {
+          _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]);
+        } else {
+          _paq.push(['removeEcommerceItem', dishId]);
+        }
+      });
+    });
+
+    // Track Radio Button Selections
+    document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const vegId = this.value;
+        const categoryName = this.getAttribute('data-category');
+        const price = parseFloat(this.getAttribute('data-price'));
+
+        // Push radio selection to Matomo
+        _paq.push(['trackEvent', 'Vegetable Selection', 'Selected', vegId, price]);
+        _paq.push(['addEcommerceItem', vegId, vegId, categoryName, price, 1]);
+      });
+    });
+
+    // Submit Form
+    document.getElementById('submitButton').addEventListener('click', function() {
+      const orderId = `ORDER-${Date.now()}`;
+      const totalValue = [...document.querySelectorAll('input[name="dishes"]:checked'), 
+                          ...document.querySelectorAll('input[name="vegetables"]:checked')]
+        .reduce((sum, item) => sum + parseFloat(item.getAttribute('data-price')), 0);
+
+      _paq.push(['trackEcommerceOrder', orderId, totalValue]);
+      alert(`Order Submitted! Total Value: $${totalValue.toFixed(2)}`);
+      window.location.reload();
+    });
+  </script>
+</body>
+</html> 
