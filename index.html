@@ -162,52 +162,59 @@
       g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
     })();
 
-  // Track valid checkbox selections (up to 2)
+  // Maintain a list of valid checkbox selections (max 2)
   let validDishSelections = [];
 
+  // Add event listeners for checkboxes
   document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
     checkbox.addEventListener('change', function () {
       const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
-      
-      // Track each click as an event
-      const dishId = this.value;
-      const categoryName = this.getAttribute('data-category');
-      const price = parseFloat(this.getAttribute('data-price'));
-      const action = this.checked ? 'Selected' : 'Deselected';
-      _paq.push(['trackEvent', 'Dish Interaction', action, dishId, price]);
-      console.log(`Event tracked: ${action} ${dishId}, Category: ${categoryName}, Price: $${price}`);
 
       if (selectedItems.length > 2) {
         alert('You can only select up to 2 dishes.');
-        this.checked = false; // Uncheck the last selected checkbox
-        updateCart(this, 'deselected', 'dish'); // Remove from cart
+        this.checked = false; // Force deselection of the last selected checkbox
+        logCheckboxEvent(this, 'Deselected', true); // Log force deselection
+        updateCart(this, 'deselected', 'dish'); // Remove from the cart
       } else {
+        logCheckboxEvent(this, this.checked ? 'Selected' : 'Deselected', false); // Log user action
         updateCart(this, this.checked ? 'selected' : 'deselected', 'dish');
       }
     });
   });
 
-  // Track radio button selections (1 valid selection only)
+  // Function to log checkbox events
+  function logCheckboxEvent(checkbox, action, isForced) {
+    const dishId = checkbox.value;
+    const categoryName = checkbox.getAttribute('data-category');
+    const price = parseFloat(checkbox.getAttribute('data-price'));
+
+    // Track the event in Matomo
+    const eventLabel = isForced ? 'Force Deselection' : action;
+    _paq.push(['trackEvent', 'Dish Selection', eventLabel, dishId, price]);
+    console.log(`Event tracked: ${eventLabel} - ${dishId}, Category: ${categoryName}, Price: $${price}`);
+  }
+
+  // Maintain a valid vegetable selection (radio buttons)
   let validVegSelection = null;
 
+  // Add event listeners for radio buttons
   document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
     radio.addEventListener('change', function () {
-      // Track each click as an event
-      const vegId = this.value;
-      const categoryName = this.getAttribute('data-category');
-      const price = parseFloat(this.getAttribute('data-price'));
-      const action = 'Selected'; // Radio buttons only have a "Selected" action
-      _paq.push(['trackEvent', 'Vegetable Interaction', action, vegId, price]);
-      console.log(`Event tracked: ${action} ${vegId}, Category: ${categoryName}, Price: $${price}`);
-
       if (validVegSelection) {
-        // Remove the previously selected vegetable from the cart
+        // Remove previously selected vegetable from the cart
         updateCart(validVegSelection, 'deselected', 'vegetable');
       }
 
-      // Update the cart with the new valid selection
+      // Update valid vegetable selection
       validVegSelection = this;
       updateCart(this, 'selected', 'vegetable');
+
+      // Log radio selection
+      const vegId = this.value;
+      const categoryName = this.getAttribute('data-category');
+      const price = parseFloat(this.getAttribute('data-price'));
+      _paq.push(['trackEvent', 'Vegetable Selection', 'Selected', vegId, price]);
+      console.log(`Event tracked: Selected - ${vegId}, Category: ${categoryName}, Price: $${price}`);
     });
   });
 
@@ -243,7 +250,7 @@
       updateCart(removedDish, 'deselected', 'dish');
     }
 
-    // Log current cart for debugging
+    // Log current cart state for debugging
     console.log('Current valid dishes:', validDishSelections.map(dish => dish.value));
     if (validVegSelection) {
       console.log('Current valid vegetable:', validVegSelection.value);
