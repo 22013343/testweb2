@@ -162,48 +162,103 @@
       g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
     })();
 
-    // Track Checkbox Selections
-    document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
-        const dishId = this.value;
-        const categoryName = this.getAttribute('data-category');
-        const price = parseFloat(this.getAttribute('data-price'));
-        const action = this.checked ? 'Selected' : 'Deselected';
+  // Track valid checkbox selections (up to 2)
+  let validDishSelections = [];
 
-        // Push selection to Matomo
-        _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
-        if (this.checked) {
-          _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]);
-        } else {
-          _paq.push(['removeEcommerceItem', dishId]);
-        }
-      });
+  document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+      const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
+      if (selectedItems.length > 2) {
+        alert('You can only select up to 2 dishes.');
+        this.checked = false; // Uncheck the last selected checkbox
+        updateCart(this, 'deselected', 'dish'); // Remove from cart
+      } else {
+        updateCart(this, this.checked ? 'selected' : 'deselected', 'dish');
+      }
+    });
+  });
+
+  // Track radio button selections (1 valid selection only)
+  let validVegSelection = null;
+
+  document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+      if (validVegSelection) {
+        // Remove the previously selected vegetable from the cart
+        updateCart(validVegSelection, 'deselected', 'vegetable');
+      }
+
+      // Update the cart with the new valid selection
+      validVegSelection = this;
+      updateCart(this, 'selected', 'vegetable');
+    });
+  });
+
+  // Function to handle cart updates dynamically
+  function updateCart(item, action, type) {
+    const id = item.value;
+    const categoryName = item.getAttribute('data-category');
+    const price = parseFloat(item.getAttribute('data-price'));
+
+    if (action === 'selected') {
+      // Add to eCommerce cart
+      _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
+      console.log(`${type} added to cart: ${id}, Price: ${price}`);
+      if (type === 'dish') validDishSelections.push(item);
+    } else if (action === 'deselected') {
+      // Remove from eCommerce cart
+      _paq.push(['removeEcommerceItem', id]);
+      console.log(`${type} removed from cart: ${id}`);
+      if (type === 'dish') {
+        validDishSelections = validDishSelections.filter(dish => dish !== item);
+      }
+    }
+
+    validateCart();
+  }
+
+  // Ensure the cart always reflects valid quantities and selections
+  function validateCart() {
+    // Ensure only 2 dishes are valid
+    if (validDishSelections.length > 2) {
+      const removedDish = validDishSelections.shift(); // Remove the earliest added dish
+      removedDish.checked = false;
+      updateCart(removedDish, 'deselected', 'dish');
+    }
+
+    // Log current cart for debugging
+    console.log('Current valid dishes:', validDishSelections.map(dish => dish.value));
+    if (validVegSelection) {
+      console.log('Current valid vegetable:', validVegSelection.value);
+    }
+  }
+
+  // Submit Form
+  document.getElementById('submitButton').addEventListener('click', function () {
+    const orderId = `ORDER-${Date.now()}`;
+    const totalValue = validDishSelections.reduce((sum, dish) => sum + parseFloat(dish.getAttribute('data-price')), 0)
+      + (validVegSelection ? parseFloat(validVegSelection.getAttribute('data-price')) : 0);
+
+    // Submit the valid 2 dishes and 1 vegetable/beancurd
+    validDishSelections.forEach(dish => {
+      const id = dish.value;
+      const categoryName = dish.getAttribute('data-category');
+      const price = parseFloat(dish.getAttribute('data-price'));
+      _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
     });
 
-    // Track Radio Button Selections
-    document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
-      radio.addEventListener('change', function() {
-        const vegId = this.value;
-        const categoryName = this.getAttribute('data-category');
-        const price = parseFloat(this.getAttribute('data-price'));
+    if (validVegSelection) {
+      const id = validVegSelection.value;
+      const categoryName = validVegSelection.getAttribute('data-category');
+      const price = parseFloat(validVegSelection.getAttribute('data-price'));
+      _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
+    }
 
-        // Push radio selection to Matomo
-        _paq.push(['trackEvent', 'Vegetable Selection', 'Selected', vegId, price]);
-        _paq.push(['addEcommerceItem', vegId, vegId, categoryName, price, 1]);
-      });
-    });
-
-    // Submit Form
-    document.getElementById('submitButton').addEventListener('click', function() {
-      const orderId = `ORDER-${Date.now()}`;
-      const totalValue = [...document.querySelectorAll('input[name="dishes"]:checked'), 
-                          ...document.querySelectorAll('input[name="vegetables"]:checked')]
-        .reduce((sum, item) => sum + parseFloat(item.getAttribute('data-price')), 0);
-
-      _paq.push(['trackEcommerceOrder', orderId, totalValue]);
-      alert(`Order Submitted! Total Value: $${totalValue.toFixed(2)}`);
-      window.location.reload();
-    });
+    // Track eCommerce order
+    _paq.push(['trackEcommerceOrder', orderId, totalValue]);
+    alert(`Order Submitted! Total Value: $${totalValue.toFixed(2)}`);
+    window.location.reload();
+  });
   </script>
 </body>
 </html> 
