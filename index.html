@@ -173,7 +173,27 @@ _paq.push(['trackPageView']);
 _paq.push(['enableLinkTracking']);
 _paq.push(['setTrackerUrl', 'https://tracker.neogroup.com.sg/matomo.php']);
 _paq.push(['setSiteId', '12']); // Replace with your Site ID
-
+    
+// Load the Matomo tracking script
+(function() {
+    var u = "https://tracker.neogroup.com.sg/";
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+})();    
+    
+    // Function to track eCommerce product views
+function pushDataToMatomo(dishId, dishName, categoryName, price) {
+    _paq.push([
+        'setEcommerceView',
+        dishId,       // Product SKU or unique ID
+        dishName,     // Product name
+        categoryName, // Product category
+        price         // Product price (set to null if unavailable)
+    ]);
+    _paq.push(['trackPageView']); // Track the product view
+    console.log(`Tracked Product View: ${dishName} in category ${categoryName} at price ${price}`);
+}
+    
 // Function to track eCommerce product views and selections
 function trackSelection(inputElement, action) {
     const itemId = inputElement.value; // Item name or unique identifier
@@ -189,19 +209,6 @@ function trackSelection(inputElement, action) {
     console.log(`Tracked ${action}: ${itemId} (${categoryName})`);
 }
 
-    // Function to track eCommerce product views
-function pushDataToMatomo(dishId, dishName, categoryName, price) {
-    _paq.push([
-        'setEcommerceView',
-        dishId,       // Product SKU or unique ID
-        dishName,     // Product name
-        categoryName, // Product category
-        price         // Product price (set to null if unavailable)
-    ]);
-    _paq.push(['trackPageView']); // Track the product view
-    console.log(`Tracked Product View: ${dishName} in category ${categoryName} at price ${price}`);
-}
-
 // Attach event listeners to track user interactions
 document.querySelectorAll('.menu-category input[type="radio"]').forEach((input) => {
     input.addEventListener('change', function () {
@@ -209,13 +216,6 @@ document.querySelectorAll('.menu-category input[type="radio"]').forEach((input) 
         trackSelection(this, 'Selected');
     });
 });
-
-// Load the Matomo tracking script
-(function() {
-    var u = "https://tracker.neogroup.com.sg/";
-    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-    g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
-})();
   </script>
 </body>
 </html>
