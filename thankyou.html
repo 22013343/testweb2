@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You - Neo Garden</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    ul { list-style-type: none; padding: 0; }
+    li { margin: 10px 0; }
+    h1 { color: #C30010; }
+  </style>
+</head>
+<body>
+  <h1>Thank You for Your Order!</h1>
+  <div id="orderSummary">
+    <h2>Your Order Summary:</h2>
+    <ul id="summaryList"></ul>
+  </div>
+
+  <script>
+    // Retrieve the order summary from localStorage
+    const orderSummary = JSON.parse(localStorage.getItem('orderSummary'));
+
+    if (orderSummary) {
+      const summaryList = document.getElementById('summaryList');
+
+      // Display dishes
+      if (orderSummary.dishes && orderSummary.dishes.length > 0) {
+        orderSummary.dishes.forEach(dish => {
+          const li = document.createElement('li');
+          li.textContent = `${dish.id} (${dish.category}) - $${dish.price}`;
+          summaryList.appendChild(li);
+        });
+      }
+
+      // Display vegetable selection
+      if (orderSummary.vegetable) {
+        const li = document.createElement('li');
+        li.textContent = `${orderSummary.vegetable.id} (${orderSummary.vegetable.category}) - $${orderSummary.vegetable.price}`;
+        summaryList.appendChild(li);
+      }
+    } else {
+      document.getElementById('orderSummary').innerHTML = '<p>No order found. Please go back and make a selection.</p>';
+    }
+  </script>
+</body>
+</html>
