@@ -165,6 +165,53 @@
       // Optionally redirect to a thank-you page
       // window.location.href = 'thankyou.html';
     });
+
+    var _paq = window._paq = window._paq || [];
+
+// Tracker methods like "setCustomDimension" should be called before "trackPageView"
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+_paq.push(['setTrackerUrl', 'https://tracker.neogroup.com.sg/matomo.php']);
+_paq.push(['setSiteId', '12']); // Replace with your Site ID
+
+// Function to track eCommerce product views
+function pushDataToMatomo(dishId, dishName, categoryName, price) {
+    _paq.push([
+        'setEcommerceView',
+        dishId,       // Product SKU or unique ID
+        dishName,     // Product name
+        categoryName, // Product category
+        price         // Product price (set to null if unavailable)
+    ]);
+    _paq.push(['trackPageView']); // Track the product view
+}
+
+// Function to track user selections
+function trackSelection(inputElement, action) {
+    const dishId = inputElement.value;
+    const dishName = inputElement.value;
+    const categoryName = inputElement.getAttribute('data-category');
+    const price = parseFloat(inputElement.getAttribute('data-price')) || 0;
+
+    _paq.push(['trackEvent', categoryName, action, dishName, price]);
+    console.log(`Tracked ${action}: ${dishName} (${categoryName}) at $${price}`);
+}
+
+// Load the Matomo tracking script
+(function () {
+    var u = "https://tracker.neogroup.com.sg/";
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+})();
+
+// Matomo Tag Manager Script
+var _mtm = window._mtm = window._mtm || [];
+_mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+(function () {
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.async = true; g.src = 'https://tracker.neogroup.com.sg/js/container_dA4lTN2S.js';
+    s.parentNode.insertBefore(g, s);
+})();
   </script>
 </body>
 </html>
