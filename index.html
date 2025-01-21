@@ -78,64 +78,35 @@
 
   gtag('config', 'G-MY7L683648');
 </script>
- 
 <script>
-(function () {
-    var _paq = window._paq = window._paq || [];
+var _paq = window._paq = window._paq || [];
 
-    // Function to track the current page
-    function trackCurrentPage() {
-        _paq.push(['setCustomUrl', window.location.href]);
-        _paq.push(['trackPageView']);
-    }
+// Tracker methods like "setCustomDimension" should be called before "trackPageView"
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+_paq.push(['setTrackerUrl', 'https://tracker.neogroup.com.sg/matomo.php']);
+_paq.push(['setSiteId', '12']); // Replace with your Site ID
 
-    // Track the initial page load
-    trackCurrentPage();
+// Function to track eCommerce product views
+function pushDataToMatomo(dishId, dishName, categoryName, price) {
+    _paq.push([
+        'setEcommerceView',
+        dishId,       // Product SKU or unique ID
+        dishName,     // Product name
+        categoryName, // Product category
+        price         // Product price (set to null if unavailable)
+    ]);
+    _paq.push(['trackPageView']); // Track the product view
+}
 
-    // Listen for page changes (for SPAs)
-    window.addEventListener('popstate', trackCurrentPage); // Tracks changes in the browser's history
-    window.addEventListener('hashchange', trackCurrentPage); // Tracks changes in URL hash fragments
-
-    // Check if the page is reloaded
-    var isPageReloaded =
-        performance.navigation.type === 1 || // Navigation Type 1 indicates a reload
-        performance.getEntriesByType("navigation")[0]?.type === "reload";
-
-    // Conditionally load Matomo.js with a delay on page reload
-    if (isPageReloaded) {
-        setTimeout(function () {
-            (function () {
-                var u = "https://tracker.neogroup.com.sg/"; // Replace with your Matomo domain
-                _paq.push(['setTrackerUrl', u + 'matomo.php']);
-                _paq.push(['setSiteId', '11']); // Replace YOUR_SITE_ID with your actual site ID
-                var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-                g.type = 'text/javascript';
-                g.async = true;
-                g.defer = true;
-                g.src = u + 'matomo.js';
-                s.parentNode.insertBefore(g, s);
-                console.log("Matomo.js loaded after delay due to page reload.");
-            })();
-        }, 3000); // Delay in milliseconds (3 seconds in this case)
-    } else {
-        // Load Matomo.js immediately for non-reload navigations
-        (function () {
-            var u = "https://tracker.neogroup.com.sg/"; // Replace with your Matomo domain
-            _paq.push(['setTrackerUrl', u + 'matomo.php']);
-            _paq.push(['setSiteId', '11']); // Replace YOUR_SITE_ID with your actual site ID
-            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-            g.type = 'text/javascript';
-            g.async = true;
-            g.defer = true;
-            g.src = u + 'matomo.js';
-            s.parentNode.insertBefore(g, s);
-            console.log("Matomo.js loaded immediately (not a reload).");
-        })();
-    }
+// Load the Matomo tracking script
+(function() {
+    var u = "https://tracker.neogroup.com.sg/";
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
 })();
-</script>
+  
   <!-- Matomo Tag Manager -->
-<script>
   var _mtm = window._mtm = window._mtm || [];
   _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
   (function() {
