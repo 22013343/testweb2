@@ -189,6 +189,19 @@ function trackSelection(inputElement, action) {
     console.log(`Tracked ${action}: ${itemId} (${categoryName})`);
 }
 
+    // Function to track eCommerce product views
+function pushDataToMatomo(dishId, dishName, categoryName, price) {
+    _paq.push([
+        'setEcommerceView',
+        dishId,       // Product SKU or unique ID
+        dishName,     // Product name
+        categoryName, // Product category
+        price         // Product price (set to null if unavailable)
+    ]);
+    _paq.push(['trackPageView']); // Track the product view
+    console.log(`Tracked Product View: ${dishName} in category ${categoryName} at price ${price}`);
+}
+
 // Attach event listeners to track user interactions
 document.querySelectorAll('.menu-category input[type="radio"]').forEach((input) => {
     input.addEventListener('change', function () {
