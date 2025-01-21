@@ -277,7 +277,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div id="submit" style="text-align: center; margin: 20px;">
     <button id="submitButton" style="padding: 10px 20px;">Submit Selection</button>
   </div>
+  <script>
+    document.getElementById('submitButton').addEventListener('click', function () {
+      // Collect selected dishes
+      const selectedDishes = Array.from(document.querySelectorAll('input[name="dishes"]:checked')).map(dish => ({
+        id: dish.value,
+        category: dish.getAttribute('data-category'),
+        price: dish.getAttribute('data-price')
+      }));
 
+      // Collect selected vegetable
+      const selectedVegetable = document.querySelector('input[name="vegetables"]:checked');
+      const vegetableSelection = selectedVegetable
+        ? { id: selectedVegetable.value, category: selectedVegetable.getAttribute('data-category'), price: selectedVegetable.getAttribute('data-price') }
+        : null;
+
+      // Combine data
+      const orderSummary = {
+        dishes: selectedDishes,
+        vegetable: vegetableSelection
+      };
+
+      // Save to localStorage
+      localStorage.setItem('orderSummary', JSON.stringify(orderSummary));
+
+      // Redirect to summary page
+      window.location.href = 'thankyou.html';
+    });
+  </script>
 
 </body>
 </html> 
