@@ -3,18 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neo Garden Catering - Bringing People Together</title>
+ 
+  <title>Neo Garden - Bringing People Together</title>
   <style>
     body {
       font-family: Arial, sans-serif;
     }
     header {
-      background-color: #FAF8F5;
-      color: #C3102F;
+      background-color: #C30010;
+      color: white;
       font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
       padding: 10px 20px;
       text-align: center;
       border-bottom: 1px solid #ddd;
+      font-style: italic; 
+      font-weight: bold;
+    }
+    header div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between image and text */
+    }
+
+    header img {
+    width: 150px; /* Adjust size as needed */
+    height: 100px; /* Maintain aspect ratio */
     }
     nav {
       background-color: #f5f5f5;
@@ -54,12 +68,101 @@
     .grid-wrapper {
       margin-bottom: 30px;
     }
-  </style>
+  </style> 
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MY7L683648"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MY7L683648');
+</script>
+ 
+<script>
+(function () {
+    var _paq = window._paq = window._paq || [];
+
+    // Function to track the current page
+    function trackCurrentPage() {
+        _paq.push(['setCustomUrl', window.location.href]);
+        _paq.push(['trackPageView']);
+    }
+
+    // Track the initial page load
+    trackCurrentPage();
+
+    // Listen for page changes (for SPAs)
+    window.addEventListener('popstate', trackCurrentPage); // Tracks changes in the browser's history
+    window.addEventListener('hashchange', trackCurrentPage); // Tracks changes in URL hash fragments
+
+    // Check if the page is reloaded
+    var isPageReloaded =
+        performance.navigation.type === 1 || // Navigation Type 1 indicates a reload
+        performance.getEntriesByType("navigation")[0]?.type === "reload";
+
+    // Conditionally load Matomo.js with a delay on page reload
+    if (isPageReloaded) {
+        setTimeout(function () {
+            (function () {
+                var u = "https://tracker.neogroup.com.sg/"; // Replace with your Matomo domain
+                _paq.push(['setTrackerUrl', u + 'matomo.php']);
+                _paq.push(['setSiteId', '11']); // Replace YOUR_SITE_ID with your actual site ID
+                var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+                g.type = 'text/javascript';
+                g.async = true;
+                g.defer = true;
+                g.src = u + 'matomo.js';
+                s.parentNode.insertBefore(g, s);
+                console.log("Matomo.js loaded after delay due to page reload.");
+            })();
+        }, 3000); // Delay in milliseconds (3 seconds in this case)
+    } else {
+        // Load Matomo.js immediately for non-reload navigations
+        (function () {
+            var u = "https://tracker.neogroup.com.sg/"; // Replace with your Matomo domain
+            _paq.push(['setTrackerUrl', u + 'matomo.php']);
+            _paq.push(['setSiteId', '11']); // Replace YOUR_SITE_ID with your actual site ID
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.type = 'text/javascript';
+            g.async = true;
+            g.defer = true;
+            g.src = u + 'matomo.js';
+            s.parentNode.insertBefore(g, s);
+            console.log("Matomo.js loaded immediately (not a reload).");
+        })();
+    }
+})();
+</script>
+  <!-- Matomo Tag Manager -->
+<script>
+  var _mtm = window._mtm = window._mtm || [];
+  _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+  (function() {
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src='https://tracker.neogroup.com.sg/js/container_dA4lTN2S.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Tag Manager -->
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MLFQ43Q2');</script>
+<!-- End Google Tag Manager -->
 </head>
 <body>
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MLFQ43Q2"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
   <!-- Header -->
   <header>
-    <h1>NEO GARDEN</h1>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+    <img src="images/Logo.png" alt="CaterDash Logo" style="width: 70px; height: 70px;">
+    <h1>Neo Garden</h1>
+  </div>
   </header>
 
   <!-- Navigation Bar -->
@@ -140,7 +243,61 @@
               Braised Beancurd
             </li>
           </ul>
-        </div>
+         <section>
+           
+      <section id="fish">
+      <h1>FISH (WHITE DORY)</h1>
+        <div class="grid-wrapper">
+      <ul>
+        <li><input type="radio" name="fish" value="Spring Onion Fish" data-category="Fish" data-price="0"> Spring Onion Fish</li>
+        <li><input type="radio" name="fish" value="Cereal Fish" data-category="Fish" data-price="0"> Cereal Fish</li>
+        <li><input type="radio" name="fish" value="Sweet & Sour Fish" data-category="Fish" data-price="0"> Sweet & Sour Fish</li>
+      </ul>
+    </section>
+
+    <section id="chicken">
+      <h1>CHICKEN</h1>
+        <div class="grid-wrapper">
+      <ul>
+        <li><input type="radio" name="chicken" value="Thai Mango Chicken" data-category="Chicken" data-price="0"> Thai Mango Chicken</li>
+        <li><input type="radio" name="chicken" value="Signature Curry Chicken" data-category="Chicken" data-price="1.20"> Signature Curry Chicken (+1.20)</li>
+      </ul>
+    </section>
+
+    <section id="prawn">
+      <h1>PRAWN</h1>
+        <div class="grid-wrapper">
+      <ul>
+        <li><input type="radio" name="prawn" value="Thai Style Prawn" data-category="Prawn" data-price="0"> Thai Style Prawn</li>
+        <li><input type="radio" name="prawn" value="Cereal Prawn" data-category="Prawn" data-price="2.00"> Cereal Prawn (+2.00)</li>
+      </ul>
+    </section>
+
+    <section id="deep_fried">
+      <h1>DEEP FRIED</h1>
+        <div class="grid-wrapper">
+      <ul>
+        <li><input type="radio" name="deep_fried" value="Sotong Ball" data-category="Deep Fried" data-price="0"> Sotong Ball</li>
+        <li><input type="radio" name="deep_fried" value="Breaded Scallop" data-category="Deep Fried" data-price="0"> Breaded Scallop</li>
+      </ul>
+    </section>
+
+    <section id="dessert">
+      <h1>DESSERT</h1>
+        <div class="grid-wrapper">
+      <ul>
+        <li><input type="radio" name="dessert" value="Chin Chow w Longan" data-category="Dessert" data-price="0"> Chin Chow w Longan</li>
+        <li><input type="radio" name="dessert" value="Green Bean Soup" data-category="Dessert" data-price="0"> Green Bean Soup</li>
+      </ul>
+    </section>
+
+    <section id="drinks">
+      <h1>DRINKS</h1>
+        <div class="grid-wrapper">
+      <ul>
+        <li><input type="radio" name="drinks" value="Homemade Herbal Drink" data-category="Drinks" data-price="1.00"> Homemade Herbal Drink (+1.00)</li>
+        <li><input type="radio" name="drinks" value="Orange" data-category="Drinks" data-price="0"> Orange</li>
+      </ul>
       </form>
     </section>
   </div>
@@ -150,155 +307,6 @@
     <button id="submitButton" style="padding: 10px 20px;">Submit Selection</button>
   </div>
 
-  <!-- Matomo -->
-  <script>
-    var _paq = window._paq = window._paq || [];
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-      var u="https://tracker.neogroup.com.sg/";
-      _paq.push(['setTrackerUrl', u+'matomo.php']);
-      _paq.push(['setSiteId', '12']);
-      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
 
-  // Maintain a list of valid checkbox selections (max 2)
-  let validDishSelections = [];
-
-  // Add event listeners for checkboxes
-  document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
-    checkbox.addEventListener('change', function () {
-      const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
-
-      if (selectedItems.length > 2) {
-        alert('You can only select up to 2 dishes.');
-        this.checked = false; // Force deselection of the last selected checkbox
-        logCheckboxEvent(this, 'Deselected', true); // Log force deselection
-        updateCart(this, 'deselected', 'dish'); // Remove from the cart
-      } else {
-        logCheckboxEvent(this, this.checked ? 'Selected' : 'Deselected', false); // Log user action
-        updateCart(this, this.checked ? 'selected' : 'deselected', 'dish');
-      }
-    });
-  });
-
-  // Function to log checkbox events
-  function logCheckboxEvent(checkbox, action, isForced) {
-    const dishId = checkbox.value;
-    const categoryName = checkbox.getAttribute('data-category');
-    const price = parseFloat(checkbox.getAttribute('data-price'));
-
-    // Track the event in Matomo
-    const eventLabel = isForced ? 'Force Deselection' : action;
-    _paq.push(['trackEvent', 'Dish Selection', eventLabel, dishId, price]);
-    console.log(`Event tracked: ${eventLabel} - ${dishId}, Category: ${categoryName}, Price: $${price}`);
-  }
-
-// Maintain a valid vegetable selection (radio buttons)
-let validVegSelection = null;
-
-// Add event listeners for radio buttons
-document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
-  radio.addEventListener('change', function () {
-    // Log the deselection of the previously selected vegetable, if applicable
-    if (validVegSelection && validVegSelection !== this) {
-      const previousVegId = validVegSelection.value;
-      const previousCategoryName = validVegSelection.getAttribute('data-category');
-      const previousPrice = parseFloat(validVegSelection.getAttribute('data-price'));
-
-      // Log deselection event
-      _paq.push(['trackEvent', 'Vegetable Selection', 'Deselected', previousVegId, previousPrice]);
-      console.log(`Event tracked: Deselected - ${previousVegId}, Category: ${previousCategoryName}, Price: $${previousPrice}`);
-
-      // Remove the previously selected vegetable from the eCommerce cart
-      _paq.push(['removeEcommerceItem', previousVegId]);
-      console.log(`Vegetable removed from cart: ${previousVegId}`);
-    }
-
-    // Update the valid vegetable selection
-    validVegSelection = this;
-
-    // Log the selection of the new vegetable
-    const newVegId = this.value;
-    const newCategoryName = this.getAttribute('data-category');
-    const newPrice = parseFloat(this.getAttribute('data-price'));
-
-    // Log selection event
-    _paq.push(['trackEvent', 'Vegetable Selection', 'Selected', newVegId, newPrice]);
-    console.log(`Event tracked: Selected - ${newVegId}, Category: ${newCategoryName}, Price: $${newPrice}`);
-
-    // Add the newly selected vegetable to the eCommerce cart
-    _paq.push(['addEcommerceItem', newVegId, newVegId, newCategoryName, newPrice, 1]);
-    console.log(`Vegetable added to cart: ${newVegId}, Price: ${newPrice}`);
-  });
-});
-
-  // Function to handle cart updates dynamically
-  function updateCart(item, action, type) {
-    const id = item.value;
-    const categoryName = item.getAttribute('data-category');
-    const price = parseFloat(item.getAttribute('data-price'));
-
-    if (action === 'selected') {
-      // Add to eCommerce cart
-      _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
-      console.log(`${type} added to cart: ${id}, Price: ${price}`);
-      if (type === 'dish') validDishSelections.push(item);
-    } else if (action === 'deselected') {
-      // Remove from eCommerce cart
-      _paq.push(['removeEcommerceItem', id]);
-      console.log(`${type} removed from cart: ${id}`);
-      if (type === 'dish') {
-        validDishSelections = validDishSelections.filter(dish => dish !== item);
-      }
-    }
-
-    validateCart();
-  }
-
-  // Ensure the cart always reflects valid quantities and selections
-  function validateCart() {
-    // Ensure only 2 dishes are valid
-    if (validDishSelections.length > 2) {
-      const removedDish = validDishSelections.shift(); // Remove the earliest added dish
-      removedDish.checked = false;
-      updateCart(removedDish, 'deselected', 'dish');
-    }
-
-    // Log current cart state for debugging
-    console.log('Current valid dishes:', validDishSelections.map(dish => dish.value));
-    if (validVegSelection) {
-      console.log('Current valid vegetable:', validVegSelection.value);
-    }
-  }
-
-  // Submit Form
-  document.getElementById('submitButton').addEventListener('click', function () {
-    const orderId = `ORDER-${Date.now()}`;
-    const totalValue = validDishSelections.reduce((sum, dish) => sum + parseFloat(dish.getAttribute('data-price')), 0)
-      + (validVegSelection ? parseFloat(validVegSelection.getAttribute('data-price')) : 0);
-
-    // Submit the valid 2 dishes and 1 vegetable/beancurd
-    validDishSelections.forEach(dish => {
-      const id = dish.value;
-      const categoryName = dish.getAttribute('data-category');
-      const price = parseFloat(dish.getAttribute('data-price'));
-      _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
-    });
-
-    if (validVegSelection) {
-      const id = validVegSelection.value;
-      const categoryName = validVegSelection.getAttribute('data-category');
-      const price = parseFloat(validVegSelection.getAttribute('data-price'));
-      _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
-    }
-
-    // Track eCommerce order
-    _paq.push(['trackEcommerceOrder', orderId, totalValue]);
-    alert(`Order Submitted! Total Value: $${totalValue.toFixed(2)}`);
-    window.location.reload();
-  });
-  </script>
 </body>
 </html> 
