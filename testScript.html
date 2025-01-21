@@ -1,0 +1,170 @@
+<script>
+  
+// Maintain a list of valid checkbox selections (max 2)
+let validDishSelections = [];
+
+// Maintain selections for radio button sections
+let validSelections = {
+  vegetables: null,
+  fish: null,
+  chicken: null,
+  prawn: null,
+  deep_fried: null,
+  dessert: null,
+  drinks: null,
+};
+
+// Track previously logged states
+const loggedStates = new WeakMap(); // Use a WeakMap to track states of elements
+
+// Add event listeners for checkboxes (Rice/Noodles)
+document.querySelectorAll('input[name="dishes"]').forEach((checkbox) => {
+  if (!checkbox.dataset.listenerAdded) {
+    checkbox.dataset.listenerAdded = true; // Ensure listener is added only once
+    checkbox.addEventListener('change', function () {
+      const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
+
+      if (selectedItems.length > 2) {
+        alert('You can only select up to 2 dishes.');
+        this.checked = false; // Force deselection
+        logCheckboxEvent(this, 'Deselected', true);
+        updateCart(this, 'deselected', 'dish');
+      } else {
+        logCheckboxEvent(this, this.checked ? 'Selected' : 'Deselected', false);
+        updateCart(this, this.checked ? 'selected' : 'deselected', 'dish');
+      }
+    });
+  }
+});
+
+// Add event listeners for radio buttons (Additional Sections)
+const radioCategories = ['vegetables', 'fish', 'chicken', 'prawn', 'deep_fried', 'dessert', 'drinks'];
+radioCategories.forEach((category) => {
+  document.querySelectorAll(`input[name="${category}"]`).forEach((radio) => {
+    if (!radio.dataset.listenerAdded) {
+      radio.dataset.listenerAdded = true; // Ensure listener is added only once
+      radio.addEventListener('change', function () {
+        if (validSelections[category] && validSelections[category] !== this) {
+          const previous = validSelections[category];
+          console.log(`Deselected: ${previous.value}`);
+          trackEventOnce(previous, `${category} Selection`, 'Deselected', 0);
+          _paq.push(['removeEcommerceItem', previous.value]);
+        }
+
+        // Update selection
+        validSelections[category] = this;
+        const newValue = this.value;
+        console.log(`Selected: ${newValue}`);
+        trackEventOnce(this, `${category} Selection`, 'Selected', 0);
+        _paq.push(['addEcommerceItem', newValue, newValue, category, 0, 1]);
+      });
+    }
+  });
+});
+
+// Function to log checkbox events
+function logCheckboxEvent(checkbox, action, isForced) {
+  const dishId = checkbox.value;
+  const categoryName = checkbox.getAttribute('data-category');
+  const price = parseFloat(checkbox.getAttribute('data-price')) || 0;
+
+  trackEventOnce(checkbox, 'Dish Selection', action, price, isForced);
+}
+
+// Track an event only once
+function trackEventOnce(element, category, action, value, isForced = false) {
+  const lastLoggedState = loggedStates.get(element) || {};
+  const currentState = { category, action, value };
+
+  // Only log if the state is different
+  if (
+    lastLoggedState.category !== currentState.category ||
+    lastLoggedState.action !== currentState.action ||
+    lastLoggedState.value !== currentState.value
+  ) {
+    _paq.push(['trackEvent', category, action, element.value, value]);
+    console.log(`Event tracked: ${action} - ${element.value}, Category: ${category}, Value: ${value}`);
+    loggedStates.set(element, currentState); // Update the logged state
+  } else {
+    console.log(`Skipped duplicate event: ${action} - ${element.value}`);
+  }
+}
+
+// Function to update the cart dynamically
+function updateCart(item, action, type) {
+  const id = item.value;
+  const categoryName = item.getAttribute('data-category');
+  const price = parseFloat(item.getAttribute('data-price')) || 0;
+
+  if (action === 'selected') {
+    _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
+    console.log(`${type} added to cart: ${id}, Price: ${price}`);
+    if (type === 'dish') validDishSelections.push(item);
+  } else if (action === 'deselected') {
+    _paq.push(['removeEcommerceItem', id]);
+    console.log(`${type} removed from cart: ${id}`);
+    if (type === 'dish') {
+      validDishSelections = validDishSelections.filter((dish) => dish !== item);
+    }
+  }
+
+  validateCart();
+}
+
+// Ensure only 2 dishes remain selected
+function validateCart() {
+  if (validDishSelections.length > 2) {
+    const removedDish = validDishSelections.shift();
+    removedDish.checked = false;
+    updateCart(removedDish, 'deselected', 'dish');
+  }
+
+  console.log('Current valid dishes:', validDishSelections.map((dish) => dish.value));
+}
+
+// Submit button validation and redirection
+document.getElementById('submitButton').addEventListener('click', function () {
+  const orderId = `ORDER-${Date.now()}`;
+  const validDishes = validDishSelections.map((dish) => ({
+    id: dish.value,
+    category: dish.getAttribute('data-category'),
+    price: parseFloat(dish.getAttribute('data-price')) || 0,
+  }));
+
+  const validRadioSelections = {};
+  let allValid = true;
+
+  // Validate all required radio sections
+  radioCategories.forEach((category) => {
+    if (!validSelections[category]) {
+      alert(`Please select an option for ${category.replace('_', ' ').toUpperCase()}.`);
+      allValid = false;
+    } else {
+      validRadioSelections[category] = {
+        id: validSelections[category].value,
+        category,
+        price: parseFloat(validSelections[category].getAttribute('data-price')) || 0,
+      };
+    }
+  });
+
+  if (!allValid) return;
+
+  // Save to localStorage
+  localStorage.setItem(
+    'cartItems',
+    JSON.stringify({
+      validDishes,
+      validSelections: validRadioSelections,
+      orderId,
+    })
+  );
+
+  console.log('Order submitted successfully:', { validDishes, validRadioSelections, orderId });
+
+  // Redirect to the cart page
+  window.location.href = 'cart.html';
+});
+
+
+</script>
