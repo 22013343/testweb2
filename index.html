@@ -188,7 +188,7 @@ function pushDataToMatomo(dishId, dishName, categoryName, price) {
         dishId,       // Product SKU or unique ID
         dishName,     // Product name
         categoryName, // Product category
-        price         // Product price (set to null if unavailable)
+        price || 0        // Product price (set to null if unavailable)
     ]);
     _paq.push(['trackPageView']); // Track the product view
     console.log(`Tracked Product View: ${dishName} in category ${categoryName} at price ${price}`);
@@ -198,22 +198,55 @@ function pushDataToMatomo(dishId, dishName, categoryName, price) {
 function trackSelection(inputElement, action) {
     const itemId = inputElement.value; // Item name or unique identifier
     const categoryName = inputElement.name; // Category name (e.g., staple, vegetable, fish)
+ const price = parseFloat(inputElement.getAttribute('data-price')) || null; // Price from data attribute
 
+    // Use the eCommerce tracking function for Selected actions only
+    if (action === 'Selected') {
+        pushDataToMatomo(itemId, itemId, categoryName, price);
+    }
+
+    // Track additional custom events
     _paq.push([
         'trackEvent',
-        categoryName, // Category of the menu item
-        action,       // Action performed (e.g., Selected)
-        itemId,       // Name or ID of the selected item
-        0             // Price (set to 0 as no price is available for now)
+        categoryName, // Category name
+        action,       // Action (e.g., Selected or Deselected)
+        itemId,       // Item name or ID
+        price || 0    // Price (default to 0 if unavailable)
     ]);
-    console.log(`Tracked ${action}: ${itemId} (${categoryName})`);
+    console.log(`Tracked ${action}: ${itemId} (${categoryName}) at $${price || 0}`);
 }
 
-// Attach event listeners to track user interactions
-document.querySelectorAll('.menu-category input[type="radio"]').forEach((input) => {
+// Attach event listeners for checkboxes
+document.querySelectorAll('.checkbox-success input[type="checkbox"]').forEach((input) => {
     input.addEventListener('change', function () {
-        // Track the selection as "Selected" when the user selects an option
-        trackSelection(this, 'Selected');
+        const action = this.checked ? 'Selected' : 'Deselected';
+        handleInteraction(this, action);
+
+        // Handle forced deselection (limit selections to a maximum, e.g., 2)
+        if (this.checked) {
+            const selectedItems = document.querySelectorAll('.checkbox-success input[type="checkbox"]:checked');
+            if (selectedItems.length > 2) {
+                alert('You can only select up to 2 items.');
+                this.checked = false; // Force deselection
+                handleInteraction(this, 'Deselected');
+            }
+        }
+    });
+});
+
+// Attach event listeners for radio buttons
+document.querySelectorAll('.radio-success input[type="radio"]').forEach((input) => {
+    input.addEventListener('change', function () {
+        // Track Deselection for previously selected radio button
+        const radios = document.querySelectorAll(`input[name="${input.name}"]`);
+        radios.forEach((radio) => {
+            if (radio !== this && radio.checked) {
+                handleInteraction(radio, 'Deselected');
+            }
+        });
+
+        // Track as "Selected" when a new radio button is chosen
+        handleInteraction(this, 'Selected');
     });
 });
   </script>
