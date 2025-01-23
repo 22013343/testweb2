@@ -217,14 +217,14 @@ function trackSelection(inputElement, action) {
 }
 
 // Attach event listeners for checkboxes
-document.querySelectorAll('.checkbox-success input[type="checkbox"]').forEach((input) => {
+document.querySelectorAll('.menu-category input[type="checkbox"]').forEach((input) => {
     input.addEventListener('change', function () {
         const action = this.checked ? 'Selected' : 'Deselected';
         handleInteraction(this, action);
 
         // Handle forced deselection (limit selections to a maximum, e.g., 2)
         if (this.checked) {
-            const selectedItems = document.querySelectorAll('.checkbox-success input[type="checkbox"]:checked');
+            const selectedItems = document.querySelectorAll('.menu-category input[type="checkbox"]:checked');
             if (selectedItems.length > 2) {
                 alert('You can only select up to 2 items.');
                 this.checked = false; // Force deselection
@@ -235,7 +235,7 @@ document.querySelectorAll('.checkbox-success input[type="checkbox"]').forEach((i
 });
 
 // Attach event listeners for radio buttons
-document.querySelectorAll('.radio-success input[type="radio"]').forEach((input) => {
+document.querySelectorAll('.menu-category input[type="radio"]').forEach((input) => {
     input.addEventListener('change', function () {
         // Track Deselection for previously selected radio button
         const radios = document.querySelectorAll(`input[name="${input.name}"]`);
