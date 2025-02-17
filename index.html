@@ -78,6 +78,88 @@
       background-color: #0056b3;
     }
   </style>
+<script>
+  // Matomo Configuration
+var _paq = window._paq = window._paq || [];
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+_paq.push(['setTrackerUrl', 'https://tracker.neogroup.com.sg/matomo.php']);
+_paq.push(['setSiteId', '12']); 
+
+// Load Matomo tracking script
+(function() {
+    var u = "https://tracker.neogroup.com.sg/";
+    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+})();
+
+// Function to track eCommerce product views
+function pushDataToMatomo(dishId, dishName, categoryName, price) {
+    _paq.push([
+        'setEcommerceView',
+        dishId,       // Product SKU or unique ID
+        dishName,     // Product name
+        categoryName, // Product category
+        price || 0    // Product price (set to null if unavailable)
+    ]);
+    _paq.push(['trackPageView']); // Track the product view
+}
+
+// Function to handle user interactions (checkboxes and radio buttons)
+function handleInteraction(inputElement, action) {
+    const itemId = inputElement.value; // Unique ID or name
+    const categoryName = inputElement.name; // Category (e.g., staple, vegetable, fish)
+    const price = parseFloat(inputElement.getAttribute('data-price')) || null; // Price from data attribute
+
+    // Use the eCommerce tracking function for Selected actions only
+    if (action === 'Selected') {
+        pushDataToMatomo(itemId, itemId, categoryName, price);
+    }
+
+    // Track additional custom events
+    _paq.push([
+        'trackEvent',
+        categoryName, // Category name
+        action,       // Action (e.g., Selected or Deselected)
+        itemId,       // Item name or ID
+        price || 0    // Price (default to 0 if unavailable)
+    ]);
+}
+
+// Attach event listeners for checkboxes
+document.querySelectorAll('.checkbox-success input[type="checkbox"]').forEach((input) => {
+    input.addEventListener('change', function () {
+        const action = this.checked ? 'Selected' : 'Deselected';
+        handleInteraction(this, action);
+
+        // Handle forced deselection (limit selections to a maximum, e.g., 2)
+        if (this.checked) {
+            const selectedItems = document.querySelectorAll('.checkbox-success input[type="checkbox"]:checked');
+            if (selectedItems.length > 2) {
+                alert('You can only select up to 2 items.');
+                this.checked = false; // Force deselection
+                handleInteraction(this, 'Deselected');
+            }
+        }
+    });
+});
+
+// Attach event listeners for radio buttons
+document.querySelectorAll('.radio-success input[type="radio"]').forEach((input) => {
+    input.addEventListener('change', function () {
+        // Track Deselection for previously selected radio button
+        const radios = document.querySelectorAll(input[name="${input.name}"]);
+        radios.forEach((radio) => {
+            if (radio !== this && radio.checked) {
+                handleInteraction(radio, 'Deselected');
+            }
+        });
+
+        // Track as "Selected" when a new radio button is chosen
+        handleInteraction(this, 'Selected');
+    });
+});
+</script>
 </head>
 <body>
   <div class="container">
@@ -165,88 +247,6 @@
       // Optionally redirect to a thank-you page
       // window.location.href = 'thankyou.html';
     });
-
-
-// Matomo Configuration
-var _paq = window._paq = window._paq || [];
-_paq.push(['trackPageView']);
-_paq.push(['enableLinkTracking']);
-_paq.push(['setTrackerUrl', 'https://tracker.neogroup.com.sg/matomo.php']);
-_paq.push(['setSiteId', '12']); 
-
-// Load Matomo tracking script
-(function() {
-    var u = "https://tracker.neogroup.com.sg/";
-    var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-    g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
-})();
-
-// Function to track eCommerce product views
-function pushDataToMatomo(dishId, dishName, categoryName, price) {
-    _paq.push([
-        'setEcommerceView',
-        dishId,       // Product SKU or unique ID
-        dishName,     // Product name
-        categoryName, // Product category
-        price || 0    // Product price (set to null if unavailable)
-    ]);
-    _paq.push(['trackPageView']); // Track the product view
-}
-
-// Function to handle user interactions (checkboxes and radio buttons)
-function handleInteraction(inputElement, action) {
-    const itemId = inputElement.value; // Unique ID or name
-    const categoryName = inputElement.name; // Category (e.g., staple, vegetable, fish)
-    const price = parseFloat(inputElement.getAttribute('data-price')) || null; // Price from data attribute
-
-    // Use the eCommerce tracking function for Selected actions only
-    if (action === 'Selected') {
-        pushDataToMatomo(itemId, itemId, categoryName, price);
-    }
-
-    // Track additional custom events
-    _paq.push([
-        'trackEvent',
-        categoryName, // Category name
-        action,       // Action (e.g., Selected or Deselected)
-        itemId,       // Item name or ID
-        price || 0    // Price (default to 0 if unavailable)
-    ]);
-}
-
-// Attach event listeners for checkboxes
-document.querySelectorAll('.checkbox-success input[type="checkbox"]').forEach((input) => {
-    input.addEventListener('change', function () {
-        const action = this.checked ? 'Selected' : 'Deselected';
-        handleInteraction(this, action);
-
-        // Handle forced deselection (limit selections to a maximum, e.g., 2)
-        if (this.checked) {
-            const selectedItems = document.querySelectorAll('.checkbox-success input[type="checkbox"]:checked');
-            if (selectedItems.length > 2) {
-                alert('You can only select up to 2 items.');
-                this.checked = false; // Force deselection
-                handleInteraction(this, 'Deselected');
-            }
-        }
-    });
-});
-
-// Attach event listeners for radio buttons
-document.querySelectorAll('.radio-success input[type="radio"]').forEach((input) => {
-    input.addEventListener('change', function () {
-        // Track Deselection for previously selected radio button
-        const radios = document.querySelectorAll(input[name="${input.name}"]);
-        radios.forEach((radio) => {
-            if (radio !== this && radio.checked) {
-                handleInteraction(radio, 'Deselected');
-            }
-        });
-
-        // Track as "Selected" when a new radio button is chosen
-        handleInteraction(this, 'Selected');
-    });
-});
   </script>
 </body>
 </html>
